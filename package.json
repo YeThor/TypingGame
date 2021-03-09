@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "제한 시간 내에 단어를 입력하여 점수를 획득하는 웹앱",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/YeThor/TypingGame.git"
@@ -17,6 +15,9 @@
   },
   "homepage": "https://github.com/YeThor/TypingGame#readme",
   "devDependencies": {
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "webpack": "^5.24.4",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
