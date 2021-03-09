@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/YeThor/TypingGame/issues"
   },
-  "homepage": "https://github.com/YeThor/TypingGame#readme"
+  "homepage": "https://github.com/YeThor/TypingGame#readme",
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  }
 }
