@@ -1,0 +1,19 @@
+{
+  "name": "typinggame",
+  "version": "1.0.0",
+  "description": "제한 시간 내에 단어를 입력하여 점수를 획득하는 웹앱",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YeThor/TypingGame.git"
+  },
+  "author": "KIM YESOL",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YeThor/TypingGame/issues"
+  },
+  "homepage": "https://github.com/YeThor/TypingGame#readme"
+}
