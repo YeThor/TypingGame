@@ -1,0 +1,43 @@
+#container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  min-width: min-content;
+  margin: auto;
+  align-items: center;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.top span {
+  padding: 5px 20px 5px 20px;
+  line-height: 1.5rem;
+}
+
+input {
+  font-size: large;
+}
+
+#word {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 2rem;
+}
+
+.bottom {
+  margin-top: 10px;
+}
+
+.bottom button {
+  padding: 5px 10px 5px 10px;
+  font-size: 1.2rem;
+}
