@@ -4,32 +4,42 @@ export interface Word {
   text: string;
 }
 
+function renderGame(container: HTMLElement, words: Word[]): Game {
+  return new Game(container, words);
+}
+
 class Game {
-  words: Word[];
-  totalScore: number;
-  time: number;
-  timerId: ReturnType<typeof setInterval> | null = null;
-  word: string | null = null;
   container: HTMLElement;
+  words: Word[] = [];
+  private _index = 0;
+  private _success = 0;
+  private _score = 0;
+  private _time = 0;
+  private _timeSum = 0;
+  private _timerId: ReturnType<typeof setInterval> | null = null;
 
-  constructor(words: Word[], container: HTMLElement) {
-    this.words = [{ second: 10, text: "a" }];
-    this.totalScore = words.length;
-    this.time = words[0].second;
+  constructor(container: HTMLElement, words: Word[]) {
+    if (words.length === 0) {
+      throw new Error("NO WORDS");
+    }
+
     this.container = container;
-    // this.words = words.reverse();
+    this._score = words.length;
+    this._time = words[0].second;
+    this._index = 0;
+    this.words = words;
 
-    this.connectedCallback();
+    this.attachDOM(this._time, this._score);
+    this.attachEvent();
   }
 
-  connectedCallback = (): void => {
-    const template = this.getTemplate(this.time, this.totalScore);
+  attachDOM = (time: number, score: number): void => {
+    const template = this.getTemplate(time, score);
 
     this.container.innerHTML = template;
-    this.attachEvent();
   };
 
-  getTemplate = (time = 0, score = 0): string => {
+  getTemplate = (time: number, score: number): string => {
     return `
       <div id="container">
         <div class="top">
@@ -38,7 +48,7 @@ class Game {
         </div>
         <div id="word">문제 단어</div>
         <div class="word-input">
-          <input id="answer" type="text" />
+          <input id="answer" type="text" disabled/>
         </div>
         <div class="bottom">
           <button class="game-btn" data-action="start">시작</button>
@@ -49,9 +59,10 @@ class Game {
 
   attachEvent = (): void => {
     const startButton = document.querySelector(".game-btn") as HTMLElement;
+    const inputElement = document.getElementById("answer") as HTMLInputElement;
 
-    if (!startButton) {
-      console.warn("start button not found");
+    if (!startButton || !inputElement) {
+      console.warn("Element not found");
       return;
     }
 
@@ -67,9 +78,22 @@ class Game {
         case "resume":
           startButton.innerText = `시작`;
           startButton.dataset.action = `start`;
+          this.resetGame();
           break;
         default:
           break;
+      }
+    });
+
+    inputElement.addEventListener("keypress", (e: KeyboardEvent): void => {
+      const words = this.words;
+      const index = this._index;
+
+      if (e.key === "Enter") {
+        if (inputElement.value === words[index].text) {
+          this.clearWord();
+        }
+        inputElement.value = "";
       }
     });
   };
@@ -81,27 +105,10 @@ class Game {
 
     if (!scoreElement || !timeElement || !inputElement) return;
 
+    inputElement.disabled = false;
     inputElement.focus();
 
-    // @TODO: 이벤트리스너 제거
-    inputElement.addEventListener("keypress", (e: KeyboardEvent): void => {
-      if (e.key === "Enter") {
-        console.log("검사해");
-        if (inputElement.value === this.word) {
-          console.log("맞춤");
-          this.clearWord();
-        }
-        inputElement.value = "";
-      }
-    });
-
-    const word = this.words.pop();
-
-    if (!word) {
-      throw new Error("단어가 없습니다");
-    }
-
-    this.showWord(word);
+    this.showWord(this.words[this._index]);
   };
 
   showWord = (word: Word): void => {
@@ -112,18 +119,18 @@ class Game {
 
     if (!scoreElement || !timeElement || !inputElement || !wordElement) return;
 
-    this.word = word.text;
-    this.time = word.second;
     wordElement.innerText = `${word.text}`;
+    timeElement.innerText = `남은 시간: ${word.second}초`;
 
-    this.timerId = setInterval(() => {
-      this.time--;
+    this._time = word.second;
+    this._timerId = setInterval(() => {
+      this._time--;
 
-      if (this.time === 0) {
+      if (this._time === 0) {
         this.clearWord();
       }
 
-      timeElement.innerText = `남은 시간: ${this.time}초`;
+      timeElement.innerText = `남은 시간: ${this._time}초`;
     }, 1000);
   };
 
@@ -131,28 +138,61 @@ class Game {
     const scoreElement = document.getElementById("score");
     const timeElement = document.getElementById("time");
 
+    this._timerId && clearInterval(this._timerId);
+    this._timerId = null;
+
     if (!scoreElement || !timeElement) return;
 
-    this.timerId && clearInterval(this.timerId);
-    this.timerId = null;
-    this.word = null;
-
-    if (this.time === 0) {
-      this.totalScore--;
-      scoreElement.innerText = `점수: ${this.totalScore}점`;
+    if (this._time === 0) {
+      this._score--;
+      scoreElement.innerText = `점수: ${this._score}점`;
+    } else {
+      this._success++;
+      // @TODO: Date.now();
+      this._timeSum += this.words[this._index].second - this._time;
     }
 
-    const word = this.words.pop();
+    this._index++;
 
-    if (!word) {
-      console.log("go to result page");
+    if (this._index > this.words.length - 1) {
+      const average = (this._timeSum / this._success).toFixed(2);
 
-      window.location.hash = "result";
+      window.location.hash = `result?score=${this._score}&average=${average}`;
+      this.resetProps();
+
       return;
     }
 
-    this.showWord(word);
+    this.showWord(this.words[this._index]);
+  };
+
+  resetGame = (): void => {
+    this.resetProps();
+
+    this._time = this.words[0].second;
+    this._score = this.words.length;
+
+    const scoreElement = document.getElementById("score");
+    const timeElement = document.getElementById("time");
+    const wordElement = document.getElementById("word");
+    const inputElement = document.getElementById("answer") as HTMLInputElement;
+
+    inputElement.disabled = true;
+
+    timeElement!.innerText = `남은 시간: ${this._time}초`;
+    scoreElement!.innerText = `점수 : ${this._score}점`;
+    wordElement!.innerText = `문제 단어`;
+  };
+
+  resetProps = (): void => {
+    this._index = 0;
+    this._time = 0;
+    this._timeSum = 0;
+    this._score = 0;
+    this._success = 0;
+    this._timerId && clearInterval(this._timerId);
+    this._timerId = null;
   };
 }
 
-export default Game;
+export default renderGame;
