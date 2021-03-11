@@ -1,8 +1,11 @@
-const Result = (
-  container: HTMLElement,
-  score: number,
-  average: number
-): void => {
+export interface ResultData {
+  score: number;
+  average: number;
+}
+
+const renderResult = (container: HTMLElement, data: ResultData): void => {
+  const { score = 0, average = 0 } = data;
+
   const template = `
     <div class="result">
       <p class="greeting">Mission Complete!</p>
@@ -25,4 +28,4 @@ const Result = (
   });
 };
 
-export default Result;
+export default renderResult;

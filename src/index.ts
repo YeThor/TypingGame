@@ -1,41 +1,62 @@
 import Game, { Word } from "./component/Game";
-import Result from "./component/Result";
+import renderResult from "./component/Result";
 import "./index.css";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("target");
 
   if (!container) {
+    console.error("NO CONTAINER ELEMENT");
     return;
   }
 
+  const game = new Game(container);
+
+  window.location.hash = "";
+
+  getWordsAPI()
+    .then((res: Word[]): void => {
+      game.init(res);
+    })
+    .catch((e): void => {
+      throw new Error(`API FAILED: ${e}`);
+    });
+
   window.addEventListener("hashchange", (): void => {
-    if (window.location.hash === "#") {
-      fetch("https://my-json-server.typicode.com/kakaopay-fe/resources/words")
-        .then((res: Response): Promise<Word[]> => res.json())
+    const hash = window.location.hash;
+    if (hash === "") {
+      getWordsAPI()
         .then((res: Word[]): void => {
-          // @TODO: 라우터 구현하면서 개선해야함
-          new Game(res, container);
+          game.init(res);
         })
         .catch((e): void => {
-          console.error(e);
+          throw new Error(`API FAILED: ${e}`);
         });
     }
 
-    if (window.location.hash === "#result") {
-      console.log("결과화면");
-      // @TODO
-      Result(container, 10, 4);
+    if (hash.startsWith("#result")) {
+      const { score, average } = getHashParams(hash);
+
+      renderResult(container, { score: +score, average: +average });
     }
   });
-
-  fetch("https://my-json-server.typicode.com/kakaopay-fe/resources/words")
-    .then((res: Response): Promise<Word[]> => res.json())
-    .then((res: Word[]): void => {
-      // @TODO: 라우터 구현하면서 개선해야함
-      new Game(res, container);
-    })
-    .catch((e): void => {
-      console.error(e);
-    });
 });
+
+function getWordsAPI(): Promise<Word[]> {
+  return fetch(
+    "https://my-json-server.typicode.com/kakaopay-fe/resources/words"
+  ).then((res: Response): Promise<Word[]> => res.json());
+}
+
+function getHashParams(hash: string): { [key: string]: string } {
+  const params = hash.split("?")[1];
+
+  return params
+    .split("&")
+    .reduce((acc: { [key: string]: string }, param: string) => {
+      const [key, value] = param.split("=");
+
+      acc[key] = value;
+      return acc;
+    }, {});
+}
