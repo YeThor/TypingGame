@@ -11,16 +11,33 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
-  visibility: hidden;
-}
-
-.visible {
-  visibility: visible;
 }
 
 .top span {
   padding: 5px 20px 5px 20px;
   line-height: 1.5rem;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  border: 1px solid black;
+}
+
+.result .greeting {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.result .score {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.result .average {
+  font-size: 1.1rem;
 }
 
 input {
@@ -37,7 +54,7 @@ input {
   margin-top: 10px;
 }
 
-.bottom button {
+.game-btn {
   padding: 5px 10px 5px 10px;
   font-size: 1.2rem;
 }
