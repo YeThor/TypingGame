@@ -1,4 +1,4 @@
-import Game, { Word } from "./component/Game";
+import renderGame, { Word } from "./component/Game";
 import renderResult from "./component/Result";
 import "./index.css";
 
@@ -10,28 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const game = new Game(container);
-
   window.location.hash = "";
 
-  getWordsAPI()
-    .then((res: Word[]): void => {
-      game.init(res);
-    })
-    .catch((e): void => {
-      throw new Error(`API FAILED: ${e}`);
-    });
+  initGame(container);
 
   window.addEventListener("hashchange", (): void => {
     const hash = window.location.hash;
     if (hash === "") {
-      getWordsAPI()
-        .then((res: Word[]): void => {
-          game.init(res);
-        })
-        .catch((e): void => {
-          throw new Error(`API FAILED: ${e}`);
-        });
+      initGame(container);
     }
 
     if (hash.startsWith("#result")) {
@@ -41,6 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+function initGame(container: HTMLElement): void {
+  getWordsAPI()
+    .then((res: Word[]): void => {
+      renderGame(container, res);
+    })
+    .catch((e): void => {
+      console.error(`API FAILED: ${e}`);
+    });
+}
 
 function getWordsAPI(): Promise<Word[]> {
   return fetch(
