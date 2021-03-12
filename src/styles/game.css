@@ -1,4 +1,5 @@
-#container {
+.error,
+.game {
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -7,7 +8,7 @@
   align-items: center;
 }
 
-.top {
+.game .top {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
@@ -18,7 +19,7 @@
   line-height: 1.5rem;
 }
 
-input {
+.game input {
   font-size: large;
 }
 
@@ -28,11 +29,11 @@ input {
   font-size: 2rem;
 }
 
-.bottom {
+.game .bottom {
   margin-top: 10px;
 }
 
-.game-btn {
+.game button {
   padding: 5px 10px 5px 10px;
   font-size: 1.2rem;
 }
