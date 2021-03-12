@@ -1,4 +1,4 @@
-import "../styles/result.css";
+import "../../styles/result.css";
 
 export interface ResultData {
   score: number;
