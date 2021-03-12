@@ -9,14 +9,20 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  window.location.hash = "";
+  let words: Word[] = [];
 
-  initGame(container);
+  getWords().then((res: Word[]) => {
+    words = res;
+    renderGame(container, [{ second: 5, text: "a" }]);
+  });
 
   window.addEventListener("hashchange", (): void => {
     const hash = window.location.hash;
     if (hash === "") {
-      initGame(container);
+      renderGame(container, words);
+      /* 새 API 요청이 필요한 경우
+      getWords().then((words: Word[]) => renderGame(container, words));
+      */
     }
 
     if (hash.startsWith("#result")) {
@@ -27,23 +33,20 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function initGame(container: HTMLElement): void {
-  getWordsAPI()
-    .then((res: Word[]): void => {
-      renderGame(container, [
-        { second: 5, text: "a" },
-        { second: 5, text: "b" },
-      ]);
-    })
-    .catch((e): void => {
-      console.error(`API FAILED: ${e}`);
-    });
-}
+async function getWords(): Promise<Word[]> {
+  let response = null;
+  let responseJSON = null;
 
-function getWordsAPI(): Promise<Word[]> {
-  return fetch(
-    "https://my-json-server.typicode.com/kakaopay-fe/resources/words"
-  ).then((res: Response): Promise<Word[]> => res.json());
+  try {
+    response = await fetch(
+      "https://my-json-server.typicode.com/kakaopay-fe/resources/words"
+    );
+    responseJSON = await response.json();
+  } catch (e) {
+    console.error(`API FAILED: ${e}`);
+  }
+
+  return responseJSON;
 }
 
 function getHashParams(hash: string): { [key: string]: string } {
