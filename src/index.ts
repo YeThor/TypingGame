@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (hash.startsWith("#result")) {
-      const { score, average } = getHashParams(hash);
+      const { score = 0, average = 0 } = getHashParams(hash);
 
       renderResult(container, { score: +score, average: +average });
     }
@@ -31,7 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function initGame(container: HTMLElement): void {
   getWordsAPI()
     .then((res: Word[]): void => {
-      renderGame(container, res);
+      renderGame(container, [
+        { second: 5, text: "a" },
+        { second: 5, text: "b" },
+      ]);
     })
     .catch((e): void => {
       console.error(`API FAILED: ${e}`);
@@ -48,11 +51,13 @@ function getHashParams(hash: string): { [key: string]: string } {
   const params = hash.split("?")[1];
 
   return params
-    .split("&")
-    .reduce((acc: { [key: string]: string }, param: string) => {
-      const [key, value] = param.split("=");
+    ? params
+        .split("&")
+        .reduce((acc: { [key: string]: string }, param: string) => {
+          const [key, value] = param.split("=");
 
-      acc[key] = value;
-      return acc;
-    }, {});
+          acc[key] = value;
+          return acc;
+        }, {})
+    : {};
 }
