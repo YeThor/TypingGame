@@ -4,8 +4,12 @@ export interface Word {
   text: string;
 }
 
-function renderGame(container: HTMLElement, words: Word[]): Game {
-  return new Game(container, words);
+export interface GameElements {
+  startButton: HTMLButtonElement;
+  inputElement: HTMLInputElement;
+  timeElement: HTMLElement;
+  scoreElement: HTMLElement;
+  wordElement: HTMLElement;
 }
 
 class Game {
@@ -15,9 +19,10 @@ class Game {
   private _success = 0;
   private _score = 0;
   private _time = 0;
-  private _timeSum = 0;
+  private _totalTime = 0;
   private _startTime = 0;
   private _timerId: ReturnType<typeof setInterval> | null = null;
+  private _elements: GameElements;
 
   constructor(container: HTMLElement, words: Word[]) {
     if (words.length === 0) {
@@ -31,6 +36,7 @@ class Game {
     this.words = words;
 
     this.attachDOM(this._time, this._score);
+    this._elements = this.getGameElements();
     this.attachEvent();
   }
 
@@ -38,6 +44,39 @@ class Game {
     const template = this.getTemplate(time, score);
 
     this.container.innerHTML = template;
+  };
+
+  getGameElements = (): GameElements => {
+    const startButton = document.querySelector(".game-btn");
+    const inputElement = document.getElementById("answer");
+    const scoreElement = document.getElementById("score");
+    const timeElement = document.getElementById("time");
+    const wordElement = document.getElementById("word");
+
+    const isAllExist =
+      startButton && inputElement && scoreElement && timeElement && wordElement;
+
+    const hasCorrectType =
+      inputElement instanceof HTMLInputElement &&
+      startButton instanceof HTMLButtonElement;
+
+    if (!isAllExist) {
+      console.error("NO SUCH ELEMENT");
+      throw new Error("NO SUCH ELEMENT");
+    }
+
+    if (!hasCorrectType) {
+      console.error("There is invalid input elements or button elements");
+      throw new Error("INVALID ELEMENT TYPE");
+    }
+
+    return {
+      startButton: startButton as HTMLButtonElement,
+      inputElement: inputElement as HTMLInputElement,
+      scoreElement: scoreElement as HTMLElement,
+      timeElement: timeElement as HTMLElement,
+      wordElement: wordElement as HTMLElement,
+    };
   };
 
   getTemplate = (time: number, score: number): string => {
@@ -59,13 +98,7 @@ class Game {
   };
 
   attachEvent = (): void => {
-    const startButton = document.querySelector(".game-btn") as HTMLElement;
-    const inputElement = document.getElementById("answer") as HTMLInputElement;
-
-    if (!startButton || !inputElement) {
-      console.warn("Element not found");
-      return;
-    }
+    const { startButton, inputElement } = this._elements;
 
     startButton.addEventListener("click", (): void => {
       const action = startButton.dataset.action;
@@ -101,11 +134,7 @@ class Game {
   };
 
   startGame = (): void => {
-    const scoreElement = document.getElementById("score");
-    const timeElement = document.getElementById("time");
-    const inputElement = document.getElementById("answer") as HTMLInputElement;
-
-    if (!scoreElement || !timeElement || !inputElement) return;
+    const { inputElement } = this._elements;
 
     inputElement.disabled = false;
     inputElement.focus();
@@ -114,17 +143,12 @@ class Game {
   };
 
   showWord = (word: Word): void => {
-    const scoreElement = document.getElementById("score");
-    const timeElement = document.getElementById("time");
-    const inputElement = document.getElementById("answer");
-    const wordElement = document.getElementById("word");
-
-    if (!scoreElement || !timeElement || !inputElement || !wordElement) return;
+    const { wordElement, timeElement } = this._elements;
 
     wordElement.innerText = `${word.text}`;
     timeElement.innerText = `남은 시간: ${word.second}초`;
-    this._startTime = Date.now();
 
+    this._startTime = Date.now();
     this._time = word.second;
     this._timerId = setInterval(() => {
       this._time--;
@@ -138,19 +162,15 @@ class Game {
   };
 
   clearWord = (diffMilliseconds = 0): void => {
-    const scoreElement = document.getElementById("score");
-    const timeElement = document.getElementById("time");
+    const { scoreElement } = this._elements;
+    const isSucess = !(this._time === 0);
 
     this._timerId && clearInterval(this._timerId);
     this._timerId = null;
 
-    if (!scoreElement || !timeElement) return;
-
-    const isSucess = !(this._time === 0);
-
     if (isSucess) {
       const diffSeconds = diffMilliseconds / 1000;
-      this._timeSum += diffSeconds;
+      this._totalTime += diffSeconds;
       this._success++;
     } else {
       this._score--;
@@ -162,7 +182,7 @@ class Game {
     const isDone = this._index > this.words.length - 1;
 
     if (isDone) {
-      const average = (this._timeSum / this._success).toFixed(2);
+      const average = (this._totalTime / this._success).toFixed(2);
 
       window.location.hash = `result?score=${this._score}&average=${average}`;
       this.resetProps();
@@ -179,28 +199,33 @@ class Game {
     this._time = this.words[0].second;
     this._score = this.words.length;
 
-    const scoreElement = document.getElementById("score");
-    const timeElement = document.getElementById("time");
-    const wordElement = document.getElementById("word");
-    const inputElement = document.getElementById("answer") as HTMLInputElement;
+    const {
+      inputElement,
+      timeElement,
+      scoreElement,
+      wordElement,
+    } = this._elements;
 
     inputElement.disabled = true;
-
-    timeElement!.innerText = `남은 시간: ${this._time}초`;
-    scoreElement!.innerText = `점수 : ${this._score}점`;
-    wordElement!.innerText = `문제 단어`;
+    timeElement.innerText = `남은 시간: ${this._time}초`;
+    scoreElement.innerText = `점수 : ${this._score}점`;
+    wordElement.innerText = `문제 단어`;
   };
 
   resetProps = (): void => {
     this._index = 0;
     this._time = 0;
-    this._timeSum = 0;
+    this._totalTime = 0;
     this._startTime = 0;
     this._score = 0;
     this._success = 0;
     this._timerId && clearInterval(this._timerId);
     this._timerId = null;
   };
+}
+
+function renderGame(container: HTMLElement, words: Word[]): Game {
+  return new Game(container, words);
 }
 
 export default renderGame;
