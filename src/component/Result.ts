@@ -1,3 +1,5 @@
+import "../styles/result.css";
+
 export interface ResultData {
   score: number;
   average: number;
