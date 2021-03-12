@@ -1,3 +1,5 @@
+import "../styles/game.css";
+
 // @link https://my-json-server.typicode.com/kakaopay-fe/resources/words
 export interface Word {
   second: number;

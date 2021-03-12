@@ -1,6 +1,5 @@
 import renderGame, { Word } from "./component/Game";
 import renderResult from "./component/Result";
-import "./index.css";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("target");

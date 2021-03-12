@@ -1,0 +1,21 @@
+.result {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  border: 1px solid black;
+}
+
+.result .greeting {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.result .score {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.result .average {
+  font-size: 1.1rem;
+}
