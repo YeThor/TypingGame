@@ -1,3 +1,4 @@
+import GAME_ERROR from "../constant/GameError";
 import "../styles/game.css";
 
 // @link https://my-json-server.typicode.com/kakaopay-fe/resources/words
@@ -28,7 +29,7 @@ class Game {
 
   constructor(container: HTMLElement, words: Word[]) {
     if (words.length === 0) {
-      throw new Error("NO WORDS");
+      throw new Error(GAME_ERROR.NO_WORDS);
     }
 
     this.container = container;
@@ -64,12 +65,12 @@ class Game {
 
     if (!isAllExist) {
       console.error("NO SUCH ELEMENT");
-      throw new Error("NO SUCH ELEMENT");
+      throw new Error(GAME_ERROR.NO_SUCH_ELEMENT);
     }
 
     if (!hasCorrectType) {
       console.error("There is invalid input elements or button elements");
-      throw new Error("INVALID ELEMENT TYPE");
+      throw new Error(GAME_ERROR.INVALID_ELEMENT_TYPE);
     }
 
     return {
@@ -83,7 +84,7 @@ class Game {
 
   getTemplate = (time: number, score: number): string => {
     return `
-      <div id="container">
+      <div class="game">
         <div class="top">
           <span id="time">남은 시간: ${time}초</span>
           <span id="score">점수: ${score}점</span>
@@ -226,8 +227,22 @@ class Game {
   };
 }
 
-function renderGame(container: HTMLElement, words: Word[]): Game {
-  return new Game(container, words);
+function renderGame(container: HTMLElement, words: Word[]): Game | null {
+  let game = null;
+
+  try {
+    game = new Game(container, words);
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = `
+      <div class="error"> 
+        <p><strong>다음과 같은 에러가 발생했습니다</strong></p>
+        <p>${e.message}</p>
+      </div>
+    `;
+  }
+
+  return game;
 }
 
 export default renderGame;
