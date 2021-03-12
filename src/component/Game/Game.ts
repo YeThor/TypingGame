@@ -1,5 +1,5 @@
-import GAME_ERROR from "../constant/GameError";
-import "../styles/game.css";
+import GAME_ERROR from "./GameError";
+import "../../styles/game.css";
 
 // @link https://my-json-server.typicode.com/kakaopay-fe/resources/words
 export interface Word {
@@ -227,22 +227,4 @@ class Game {
   };
 }
 
-function renderGame(container: HTMLElement, words: Word[]): Game | null {
-  let game = null;
-
-  try {
-    game = new Game(container, words);
-  } catch (e) {
-    console.error(e);
-    container.innerHTML = `
-      <div class="error"> 
-        <p><strong>다음과 같은 에러가 발생했습니다</strong></p>
-        <p>${e.message}</p>
-      </div>
-    `;
-  }
-
-  return game;
-}
-
-export default renderGame;
+export default Game;
