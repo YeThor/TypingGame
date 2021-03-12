@@ -8,21 +8,20 @@ export interface ResultData {
 const renderResult = (container: HTMLElement, data: ResultData): void => {
   const { score = 0, average = 0 } = data;
 
-  const template = `
+  container.innerHTML = `
     <div class="result">
       <p class="greeting">Mission Complete!</p>
       <p class="score">당신의 점수는 ${score}점입니다</p>
       <p class="average">단어당 평균 답변 시간은 ${average}초입니다.</p>
       <button id='restart-btn' class="game-btn">다시 시작</button>
     </div>
-    `;
+  `;
 
-  container.innerHTML = template;
-
-  const restartButton = document.getElementById("restart-btn");
+  const restartButton = container.querySelector("#restart-btn");
 
   if (!restartButton) {
-    throw new Error("No restart button");
+    console.error("No restart button");
+    return;
   }
 
   restartButton.addEventListener("click", () => {

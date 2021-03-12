@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderGame(container, [{ second: 5, text: "a" }]);
   });
 
+  window.location.hash = "";
   window.addEventListener("hashchange", (): void => {
     const hash = window.location.hash;
     if (hash === "") {
