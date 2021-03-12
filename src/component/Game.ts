@@ -16,6 +16,7 @@ class Game {
   private _score = 0;
   private _time = 0;
   private _timeSum = 0;
+  private _startTime = 0;
   private _timerId: ReturnType<typeof setInterval> | null = null;
 
   constructor(container: HTMLElement, words: Word[]) {
@@ -91,7 +92,8 @@ class Game {
 
       if (e.key === "Enter") {
         if (inputElement.value === words[index].text) {
-          this.clearWord();
+          const diff = Date.now() - this._startTime;
+          this.clearWord(diff);
         }
         inputElement.value = "";
       }
@@ -121,6 +123,7 @@ class Game {
 
     wordElement.innerText = `${word.text}`;
     timeElement.innerText = `남은 시간: ${word.second}초`;
+    this._startTime = Date.now();
 
     this._time = word.second;
     this._timerId = setInterval(() => {
@@ -134,7 +137,7 @@ class Game {
     }, 1000);
   };
 
-  clearWord = (): void => {
+  clearWord = (diffMilliseconds = 0): void => {
     const scoreElement = document.getElementById("score");
     const timeElement = document.getElementById("time");
 
@@ -143,18 +146,22 @@ class Game {
 
     if (!scoreElement || !timeElement) return;
 
-    if (this._time === 0) {
+    const isSucess = !(this._time === 0);
+
+    if (isSucess) {
+      const diffSeconds = diffMilliseconds / 1000;
+      this._timeSum += diffSeconds;
+      this._success++;
+    } else {
       this._score--;
       scoreElement.innerText = `점수: ${this._score}점`;
-    } else {
-      this._success++;
-      // @TODO: Date.now();
-      this._timeSum += this.words[this._index].second - this._time;
     }
 
     this._index++;
 
-    if (this._index > this.words.length - 1) {
+    const isDone = this._index > this.words.length - 1;
+
+    if (isDone) {
       const average = (this._timeSum / this._success).toFixed(2);
 
       window.location.hash = `result?score=${this._score}&average=${average}`;
@@ -188,6 +195,7 @@ class Game {
     this._index = 0;
     this._time = 0;
     this._timeSum = 0;
+    this._startTime = 0;
     this._score = 0;
     this._success = 0;
     this._timerId && clearInterval(this._timerId);
