@@ -1,5 +1,5 @@
-import GAME_ERROR from "./GameError";
-import "../../styles/game.css";
+import ERROR_TYPE from "../constant/ErrorType";
+import "../styles/game.css";
 
 // @link https://my-json-server.typicode.com/kakaopay-fe/resources/words
 export interface Word {
@@ -31,7 +31,7 @@ class Game {
 
   constructor(words: Word[]) {
     if (words.length === 0) {
-      throw new Error(GAME_ERROR.NO_WORDS);
+      throw new Error(ERROR_TYPE.NO_WORDS);
     }
 
     this._score = words.length;
@@ -68,12 +68,12 @@ class Game {
 
     if (!isAllExist) {
       console.error("NO SUCH ELEMENT");
-      throw new Error(GAME_ERROR.NO_SUCH_ELEMENT);
+      throw new Error(ERROR_TYPE.NO_SUCH_ELEMENT);
     }
 
     if (!hasCorrectType) {
       console.error("There is invalid input elements or button elements");
-      throw new Error(GAME_ERROR.INVALID_ELEMENT_TYPE);
+      throw new Error(ERROR_TYPE.INVALID_ELEMENT_TYPE);
     }
 
     return {
