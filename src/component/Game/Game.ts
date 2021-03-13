@@ -159,7 +159,7 @@ class Game {
     this._timerId = setInterval(() => {
       this._time--;
 
-      if (this._time === 0) {
+      if (this._time < 0) {
         this.clearWord();
       }
 
@@ -169,7 +169,7 @@ class Game {
 
   clearWord = (diffMilliseconds = 0): void => {
     const { scoreElement } = this._elements;
-    const isSucess = !(this._time === 0);
+    const isSucess = this._time >= 0;
 
     this._timerId && clearInterval(this._timerId);
     this._timerId = null;
