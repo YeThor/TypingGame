@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "public"),
     filename: "[name].bundle.js",
-    publicPath: "/",
+    publicPath: "/TypingGame/",
   },
   resolve: {
     extensions: [".ts", ".js"],
