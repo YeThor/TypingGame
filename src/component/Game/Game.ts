@@ -16,8 +16,8 @@ export interface GameElements {
 }
 
 class Game {
-  container: HTMLElement;
   words: Word[] = [];
+  rootElement: HTMLDivElement;
   private _index = 0;
   private _success = 0;
   private _score = 0;
@@ -29,34 +29,35 @@ class Game {
 
   static INITIAL_WORD = "문제 단어";
 
-  constructor(container: HTMLElement, words: Word[]) {
+  constructor(words: Word[]) {
     if (words.length === 0) {
       throw new Error(GAME_ERROR.NO_WORDS);
     }
 
-    this.container = container;
     this._score = words.length;
     this._time = words[0].second;
     this._index = 0;
     this.words = words;
 
-    this.attachDOM(this._time, this._score);
+    this.rootElement = this.createDOM(this._time, this._score);
     this._elements = this.getGameElements();
     this.attachEvent();
   }
 
-  attachDOM = (time: number, score: number): void => {
-    const template = this.getTemplate(time, score);
+  createDOM = (time: number, score: number): HTMLDivElement => {
+    const rootElement = document.createElement("div");
+    rootElement.classList.add("game");
+    rootElement.innerHTML = this.getTemplate(time, score);
 
-    this.container.innerHTML = template;
+    return rootElement;
   };
 
   getGameElements = (): GameElements => {
-    const startButton = this.container.querySelector(".game-btn");
-    const inputElement = this.container.querySelector("#answer");
-    const scoreElement = this.container.querySelector("#score");
-    const timeElement = this.container.querySelector("#time");
-    const wordElement = this.container.querySelector("#word");
+    const startButton = this.rootElement.querySelector(".game-btn");
+    const inputElement = this.rootElement.querySelector("#answer");
+    const scoreElement = this.rootElement.querySelector("#score");
+    const timeElement = this.rootElement.querySelector("#time");
+    const wordElement = this.rootElement.querySelector("#word");
 
     const isAllExist =
       startButton && inputElement && scoreElement && timeElement && wordElement;
@@ -214,6 +215,7 @@ class Game {
     } = this._elements;
 
     inputElement.disabled = true;
+    inputElement.value = "";
     timeElement.innerText = `${this._time}`;
     scoreElement.innerText = `${this._score}`;
     wordElement.innerText = `${Game.INITIAL_WORD}`;
