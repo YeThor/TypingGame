@@ -1,4 +1,5 @@
 import { Word } from "./component/Game";
+import getHashParams from "./getHashParams";
 import renderGame from "./renderGame";
 import renderResult from "./renderResult";
 
@@ -49,19 +50,4 @@ async function getWords(): Promise<Word[]> {
   }
 
   return responseJSON;
-}
-
-function getHashParams(hash: string): { [key: string]: string } {
-  const params = hash.split("?")[1];
-
-  return params
-    ? params
-        .split("&")
-        .reduce((acc: { [key: string]: string }, param: string) => {
-          const [key, value] = param.split("=");
-
-          acc[key] = value;
-          return acc;
-        }, {})
-    : {};
 }
