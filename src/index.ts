@@ -1,5 +1,5 @@
 import { Word } from "./component/Game";
-import getHashParams from "./getHashParams";
+import getHashParams from "./util/getHashParams";
 import renderGame from "./renderGame";
 import renderResult from "./renderResult";
 
