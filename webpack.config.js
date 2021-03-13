@@ -17,8 +17,9 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".js"],
   },
+  target: ["web", "es5"],
   devServer: {
-    contentBase: "./dist", // Content base
+    contentBase: "./public", // Content base
     inline: true, // Enable watch and live reload
     host: "localhost",
     port: 8080,
@@ -27,7 +28,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.(ts|js)$/,
         loader: "babel-loader",
         exclude: [/node_modules/],
       },
