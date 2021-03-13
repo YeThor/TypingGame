@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import getHashParams from "../src/getHashParams";
+import getHashParams from "./getHashParams";
 
 describe("getHashParams() 테스트", () => {
   it("hash로 전달된 문자열에서 ?key=value&key=value 형태로 전달된 파라미터 문자열을 객체로 바꾼다", () => {
