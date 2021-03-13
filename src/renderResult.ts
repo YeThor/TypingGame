@@ -1,15 +1,22 @@
 import Result, { ResultData } from "./component/Result";
 import getFallback from "./component/getFallback";
 
-const renderResult = (container: HTMLElement, data: ResultData): void => {
+const renderResult = (
+  container: HTMLElement,
+  data: ResultData
+): Result | null => {
+  let result = null;
+
   try {
-    const resultElement = Result(data);
+    result = new Result(data);
 
     container.innerHTML = "";
-    container.appendChild(resultElement);
+    container.appendChild(result.rootElement);
   } catch (e) {
     container.innerHTML = getFallback(e);
   }
+
+  return result;
 };
 
 export default renderResult;

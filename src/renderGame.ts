@@ -1,15 +1,19 @@
 import Game, { Word } from "./component/Game";
 import getFallback from "./component/getFallback";
 
-const renderGame = (container: HTMLElement, words: Word[]): void => {
+const renderGame = (container: HTMLElement, words: Word[]): Game | null => {
+  let game = null;
+
   try {
-    const game = new Game(words);
+    game = new Game(words);
 
     container.innerHTML = "";
     container.appendChild(game.rootElement);
   } catch (e) {
     container.innerHTML = getFallback(e);
   }
+
+  return game;
 };
 
 export default renderGame;
