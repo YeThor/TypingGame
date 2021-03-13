@@ -7,7 +7,7 @@ module.exports = {
   mode: "development",
   devtool: "inline-source-map",
   entry: {
-    index: "./src/index.ts",
+    index: ["whatwg-fetch", "./src/index.ts"],
   },
   output: {
     path: path.resolve(__dirname, "public"),
