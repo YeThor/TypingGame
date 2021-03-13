@@ -5,7 +5,7 @@ function renderGame(container: HTMLElement, words: Word[]): void {
     const game = new Game(words);
 
     container.innerHTML = "";
-    container.append(game.rootElement);
+    container.appendChild(game.rootElement);
   } catch (e) {
     console.error(e);
     container.innerHTML = `
