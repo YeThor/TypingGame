@@ -42,6 +42,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "core-js": "^3.9.1"
+    "core-js": "^3.9.1",
+    "whatwg-fetch": "^3.6.2"
   }
 }
