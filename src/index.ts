@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   getWords().then((res: Word[]) => {
     words = res;
-    renderGame(container, [{ second: 5, text: "a" }]);
+    renderGame(container, words);
   });
 
   window.location.hash = "";
