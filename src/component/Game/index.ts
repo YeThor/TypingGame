@@ -1,10 +1,11 @@
 import Game, { Word } from "./Game";
 
-function renderGame(container: HTMLElement, words: Word[]): Game | null {
-  let game = null;
-
+function renderGame(container: HTMLElement, words: Word[]): void {
   try {
-    game = new Game(container, words);
+    const game = new Game(words);
+
+    container.innerHTML = "";
+    container.append(game.rootElement);
   } catch (e) {
     console.error(e);
     container.innerHTML = `
@@ -14,8 +15,6 @@ function renderGame(container: HTMLElement, words: Word[]): Game | null {
       </div>
     `;
   }
-
-  return game;
 }
 
 export * from "./Game";
