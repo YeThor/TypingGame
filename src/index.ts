@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.location.hash = "";
   window.addEventListener("hashchange", (): void => {
     const hash = window.location.hash;
-    if (hash === "") {
+    if (hash === "" || hash === "#") {
       renderGame(container, words);
       /* 새 API 요청이 필요한 경우
       getWords().then((words: Word[]) => renderGame(container, words));
