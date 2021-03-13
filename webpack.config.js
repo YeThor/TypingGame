@@ -19,7 +19,6 @@ module.exports = {
   },
   target: ["web", "es5"],
   devServer: {
-    contentBase: "./public", // Content base
     inline: true, // Enable watch and live reload
     host: "localhost",
     port: 8080,
