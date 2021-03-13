@@ -42,10 +42,10 @@ describe("Result 클래스", () => {
     const rootElement = result.rootElement;
 
     // then
-    expect(rootElement.querySelector(".score")?.textContent).equal(
+    expect(rootElement.querySelector("#score")?.textContent).equal(
       `당신의 점수는 ${data.score}점입니다`
     );
-    expect(rootElement.querySelector(".average")?.textContent).equal(
+    expect(rootElement.querySelector("#average")?.textContent).equal(
       `단어당 평균 답변 시간은 ${data.average}초입니다.`
     );
   });
@@ -58,9 +58,9 @@ describe("Result 클래스", () => {
     const element = result.createDOM(10, 10);
 
     // then
-    expect(element.querySelector(".score")).to.exist;
-    expect(element.querySelector(".average")).to.exist;
-    expect(element.querySelector("#restart-btn")).to.exist;
+    expect(element.querySelector("#score")).to.exist;
+    expect(element.querySelector("#average")).to.exist;
+    expect(element.querySelector("button")).to.exist;
   });
 
   it("attachEvent()는 재시작 버튼에 url의 hash값을 ''로 할당하는 클릭 이벤트 리스너를 붙인다", () => {
@@ -69,7 +69,6 @@ describe("Result 클래스", () => {
     const container = document.createElement("div");
     const restartButton = document.createElement("button");
 
-    restartButton.id = "restart-btn";
     container.appendChild(restartButton);
 
     window.location.hash = "a";
@@ -83,14 +82,12 @@ describe("Result 클래스", () => {
     expect(window.location.hash).to.equal("");
   });
 
-  it("attachEvent()는 전달받은 엘리먼트에서 restart-btn id를 가진 버튼이 없을 경우 에러를 발생시킨다", () => {
+  it("attachEvent()는 전달받은 엘리먼트에서 버튼이 없을 경우 에러를 발생시킨다", () => {
     //given
     const result = new Result({ score: 10, average: 10 });
     const container = document.createElement("div");
-    const restartButton = document.createElement("button");
 
-    restartButton.id = "wrong-btn";
-    container.appendChild(restartButton);
+    container.innerHTML = "<div></div>";
 
     // when, then
     expect(() => result.attachEvent(container)).to.throw(

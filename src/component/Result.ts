@@ -29,17 +29,17 @@ class Result {
 
     rootElement.classList.add("result");
     rootElement.innerHTML = `
-    <p class="greeting">Mission Complete!</p>
-    <p class="score">당신의 점수는 ${score}점입니다</p>
-    <p class="average">단어당 평균 답변 시간은 ${average}초입니다.</p>
-    <button id='restart-btn' class="game-btn">다시 시작</button>
+    <p id="greeting">Mission Complete!</p>
+    <p id="score">당신의 점수는 ${score}점입니다</p>
+    <p id="average">단어당 평균 답변 시간은 ${average}초입니다.</p>
+    <button>다시 시작</button>
   `;
 
     return rootElement;
   };
 
   attachEvent = (rootElement: HTMLElement): void => {
-    const restartButton = rootElement.querySelector("#restart-btn");
+    const restartButton = rootElement.querySelector("button");
 
     if (!restartButton) throw new Error(ERROR_TYPE.NO_SUCH_ELEMENT);
 

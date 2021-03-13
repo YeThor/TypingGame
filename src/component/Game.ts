@@ -59,10 +59,10 @@ class Game {
       </div>
       <div id="word">${Game.INITIAL_WORD}</div>
       <div class="word-input">
-        <input id="answer" type="text" disabled/>
+        <input type="text" disabled/>
       </div>
       <div class="bottom">
-        <button class="game-btn" data-action="start">시작</button>
+        <button data-action="start">시작</button>
       </div>
   `;
 
@@ -70,8 +70,8 @@ class Game {
   };
 
   mapElements = (rootElement: HTMLElement): GameElements => {
-    const startButton = rootElement.querySelector(".game-btn");
-    const inputElement = rootElement.querySelector("#answer");
+    const startButton = rootElement.querySelector("button");
+    const inputElement = rootElement.querySelector("input");
     const scoreElement = rootElement.querySelector("#score");
     const timeElement = rootElement.querySelector("#time");
     const wordElement = rootElement.querySelector("#word");
@@ -148,13 +148,10 @@ class Game {
   };
 
   showWord = (word: Word): void => {
-    console.log("asdfa", word);
     const { wordElement, timeElement } = this._elements;
 
     wordElement.innerText = `${word.text}`;
     timeElement.innerText = `${word.second}`;
-
-    console.log("showword", wordElement.outerHTML, timeElement.outerHTML);
 
     this._startTime = Date.now();
     this._time = word.second;
