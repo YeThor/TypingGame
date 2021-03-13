@@ -1,5 +1,6 @@
-import renderGame, { Word } from "./component/Game";
-import renderResult from "./component/Result";
+import { Word } from "./component/Game";
+import renderGame from "./renderGame";
+import renderResult from "./renderResult";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("target");
