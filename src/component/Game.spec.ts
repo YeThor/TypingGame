@@ -56,8 +56,8 @@ describe("Game 클래스", () => {
     expect(element.querySelector("#score")).instanceOf(HTMLElement);
     expect(element.querySelector("#word")).instanceOf(HTMLElement);
 
-    expect(element.querySelector("#answer")).instanceOf(HTMLInputElement);
-    expect(element.querySelector(".game-btn")).instanceOf(HTMLButtonElement);
+    expect(element.querySelector("input")).instanceOf(HTMLInputElement);
+    expect(element.querySelector("button")).instanceOf(HTMLButtonElement);
   });
 
   it("mapElements()는 전달받은 엘리먼트로부터 필요한 하위요소들을 값으로 갖는 객체를 반환한다", () => {
@@ -71,7 +71,7 @@ describe("Game 클래스", () => {
       <div class="word-input">
         <input id="answer" type="text" disabled/>
       </div>
-      <button class="game-btn" data-action="start">시작</button>
+      <button data-action="start">시작</button>
     `;
 
     // when
@@ -79,8 +79,8 @@ describe("Game 클래스", () => {
 
     // then
     expect(result).deep.equal({
-      startButton: element.querySelector(".game-btn"),
-      inputElement: element.querySelector("#answer"),
+      startButton: element.querySelector("button"),
+      inputElement: element.querySelector("input"),
       scoreElement: element.querySelector("#score"),
       timeElement: element.querySelector("#time"),
       wordElement: element.querySelector("#word"),
@@ -95,46 +95,6 @@ describe("Game 클래스", () => {
     // when, then
     expect(() => game.mapElements(element)).to.throw(
       ERROR_TYPE.NO_SUCH_ELEMENT
-    );
-  });
-
-  it("mapElements()에서 추출한 input 엘리먼트가 실제 HTMLInputElement가 아닌 경우 에러를 낸다", () => {
-    // given
-    const game = new Game(words);
-    const element = document.createElement("div");
-    element.innerHTML = `
-      <span class="display">남은 시간: <span id="time">10</span>초</span>
-      <span class="display">점수: <span id="score">10</span>점</span>
-      <div id="word">단어 표시</div>
-      <div class="word-input">
-        <div id="answer" type="text" disabled/>
-      </div>
-      <button class="game-btn" data-action="start">시작</button>
-  `;
-
-    // when, then
-    expect(() => game.mapElements(element)).to.throw(
-      ERROR_TYPE.INVALID_ELEMENT_TYPE
-    );
-  });
-
-  it("mapElements()에서 추출한 버튼 엘리먼트가 실제 HTMLInputElement가 아닌 경우 에러를 낸다", () => {
-    // given
-    const game = new Game(words);
-    const element = document.createElement("div");
-    element.innerHTML = `
-      <span class="display">남은 시간: <span id="time">10</span>초</span>
-      <span class="display">점수: <span id="score">10</span>점</span>
-      <div id="word">단어 표시</div>
-      <div class="word-input">
-        <input id="answer" type="text" disabled/> 
-      </div>
-      <div class="game-btn" data-action="start">시작</button>
-  `;
-
-    // when, then
-    expect(() => game.mapElements(element)).to.throw(
-      ERROR_TYPE.INVALID_ELEMENT_TYPE
     );
   });
 
@@ -237,7 +197,7 @@ describe("Game 클래스", () => {
       // given
       const game = new Game(words);
       const button = game.rootElement.querySelector(
-        ".game-btn"
+        "button"
       ) as HTMLButtonElement;
 
       expect(button).have.text("시작");
@@ -255,7 +215,7 @@ describe("Game 클래스", () => {
       // given
       const game = new Game(words);
       const button = game.rootElement.querySelector(
-        ".game-btn"
+        "button"
       ) as HTMLButtonElement;
       const spyStartGame = chai.spy.on(game, "startGame");
 
@@ -270,7 +230,7 @@ describe("Game 클래스", () => {
       // given
       const game = new Game(words);
       const button = game.rootElement.querySelector(
-        ".game-btn"
+        "button"
       ) as HTMLButtonElement;
 
       button.click();
@@ -290,7 +250,7 @@ describe("Game 클래스", () => {
       // given
       const game = new Game(words);
       const button = game.rootElement.querySelector(
-        ".game-btn"
+        "button"
       ) as HTMLButtonElement;
       const spyResetGame = chai.spy.on(game, "resetGame");
 
