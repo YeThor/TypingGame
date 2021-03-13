@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import getFallback, { template } from "../src/component/getFallback";
+import getFallback, { template } from "./getFallback";
 
 describe("getFallback() 테스트", () => {
   it("에러객체의 message 프로퍼티를 담은 템플릿을 반환한다 ", () => {
