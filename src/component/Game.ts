@@ -17,7 +17,6 @@ export interface GameElements {
 
 class Game {
   words: Word[] = [];
-  rootElement: HTMLDivElement;
   private _index = 0;
   private _success = 0;
   private _score = 0;
@@ -26,6 +25,7 @@ class Game {
   private _startTime = 0;
   private _timerId: ReturnType<typeof setInterval> | null = null;
   private _elements: GameElements;
+  private _rootElement: HTMLDivElement;
 
   static INITIAL_WORD = "문제 단어";
 
@@ -39,25 +39,42 @@ class Game {
     this._index = 0;
     this.words = words;
 
-    this.rootElement = this.createDOM(this._time, this._score);
-    this._elements = this.getGameElements();
+    this._rootElement = this.createDOM(this._time, this._score);
+    this._elements = this.mapElements(this._rootElement);
     this.attachEvent();
+  }
+
+  get rootElement(): HTMLElement {
+    return this._rootElement;
   }
 
   createDOM = (time: number, score: number): HTMLDivElement => {
     const rootElement = document.createElement("div");
+
     rootElement.classList.add("game");
-    rootElement.innerHTML = this.getTemplate(time, score);
+    rootElement.innerHTML = `
+      <div class="top">
+        <span class="display">남은 시간: <span id="time">${time}</span>초</span>
+        <span class="display">점수: <span id="score">${score}</span>점</span>
+      </div>
+      <div id="word">${Game.INITIAL_WORD}</div>
+      <div class="word-input">
+        <input id="answer" type="text" disabled/>
+      </div>
+      <div class="bottom">
+        <button class="game-btn" data-action="start">시작</button>
+      </div>
+  `;
 
     return rootElement;
   };
 
-  getGameElements = (): GameElements => {
-    const startButton = this.rootElement.querySelector(".game-btn");
-    const inputElement = this.rootElement.querySelector("#answer");
-    const scoreElement = this.rootElement.querySelector("#score");
-    const timeElement = this.rootElement.querySelector("#time");
-    const wordElement = this.rootElement.querySelector("#word");
+  mapElements = (rootElement: HTMLElement): GameElements => {
+    const startButton = rootElement.querySelector(".game-btn");
+    const inputElement = rootElement.querySelector("#answer");
+    const scoreElement = rootElement.querySelector("#score");
+    const timeElement = rootElement.querySelector("#time");
+    const wordElement = rootElement.querySelector("#word");
 
     const isAllExist =
       startButton && inputElement && scoreElement && timeElement && wordElement;
@@ -83,24 +100,6 @@ class Game {
       timeElement: timeElement as HTMLElement,
       wordElement: wordElement as HTMLElement,
     };
-  };
-
-  getTemplate = (time: number, score: number): string => {
-    return `
-      <div class="game">
-        <div class="top">
-          <span class="display">남은 시간: <span id="time">${time}</span>초</span>
-          <span class="display">점수: <span id="score">${score}</span>점</span>
-        </div>
-        <div id="word">${Game.INITIAL_WORD}</div>
-        <div class="word-input">
-          <input id="answer" type="text" disabled/>
-        </div>
-        <div class="bottom">
-          <button class="game-btn" data-action="start">시작</button>
-        </div>
-      </div>
-      `;
   };
 
   attachEvent = (): void => {
@@ -149,10 +148,13 @@ class Game {
   };
 
   showWord = (word: Word): void => {
+    console.log("asdfa", word);
     const { wordElement, timeElement } = this._elements;
 
     wordElement.innerText = `${word.text}`;
     timeElement.innerText = `${word.second}`;
+
+    console.log("showword", wordElement.outerHTML, timeElement.outerHTML);
 
     this._startTime = Date.now();
     this._time = word.second;
@@ -188,17 +190,18 @@ class Game {
     const isDone = this._index > this.words.length - 1;
 
     if (isDone) {
-      const average = this._success
-        ? (this._totalTime / this._success).toFixed(2)
-        : "0";
-
-      window.location.hash = `result?score=${this._score}&average=${average}`;
+      this.routeToResult(this._score, this._success, this._totalTime);
       this.resetProps();
-
       return;
     }
 
     this.showWord(this.words[this._index]);
+  };
+
+  routeToResult = (score: number, success: number, totalTime: number): void => {
+    const average = success ? (totalTime / success).toFixed(2) : "0";
+
+    window.location.hash = `result?score=${score}&average=${average}`;
   };
 
   resetGame = (): void => {
